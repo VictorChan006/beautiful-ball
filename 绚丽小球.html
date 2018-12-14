@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>绚丽小球</title>
+</head>
+<body>
+	<canvas id="canvas">当前的浏览器版本不支持canvas，请升级至最新版本!</canvas>
+</body>
+<!-- <script type="js/underscore.min.js"></script> -->
+<script>
+	const canvas = document.getElementById("canvas");
+	const ctx = canvas.getContext("2d");
+	canvas.width = 1000;
+	canvas.height = 600;
+	canvas.style.backgroundColor = "#000";
+
+	class ball{
+		constructor(x,y,color){  /*对象构造器*/
+			this.x = x;
+			this.y = y;
+			this.color = color;
+			this.r = 40;
+		}
+
+		render(){   /*绘制小球方法*/
+			ctx.save();
+			ctx.beginPath();
+			ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+			ctx.fillStyle = this.color;
+			ctx.fill();
+			ctx.restore();
+		}
+	}
+
+	class movingBall extends ball{  /*移动的小球*/
+		constructor(x,y,color){
+			super(x,y,color);   /*调用父类让参数得以继承*/
+			this.dX = Math.random()*10-5;
+			this.dY = Math.random()*10-5;
+			this.dR = Math.random()*2+1;
+		}
+		upDate(){
+			this.x += this.dX;
+			this.y += this.dY;
+			this.r -= this.dR;
+			if(this.r < 0 ){
+				this.r = 0;
+			}
+		}
+	}
+
+	let ballArr = [];   /*实例化小球*/
+	let colorArr = ['red','blue','green','yellow','pink','purple'];
+	canvas.addEventListener("mousemove",function(e){  /*监听鼠标移动*/
+		ballArr.push(new movingBall(e.offsetX,e.offsetY,colorArr[Math.floor(Math.random()*colorArr.length)]));
+	})
+
+	setInterval(function(){
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		for(let i=0; i<ballArr.length; i++){
+			ballArr[i].render();
+			ballArr[i].upDate();
+		}
+	},50)
+
+</script>
+
+</html>
